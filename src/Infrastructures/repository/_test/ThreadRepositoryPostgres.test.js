@@ -82,7 +82,7 @@ describe('ThreadRepositoryPostgres', () => {
       await expect(threadRepositoryPostgres.verifyExistedThread('thread-123456')).rejects.toThrowError(NotFoundError);
     });
 
-    it('should not throw InvariantError when thread is exists', async () => {
+    it('should not throw NotFoundError when thread is exists', async () => {
       // Arrange
       await UsersTableTestHelper.addUser({ username: 'dicoding' });
 
