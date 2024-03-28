@@ -11,7 +11,7 @@ class DeleteCommentUseCase {
     await this._threadRepository.verifyExistedThread(useCaseThreadId);
     await this._commentRepository.verifyExistedComment(useCaseId);
     await this._commentRepository.verifyCommentOwner(useCaseId, useCaseOwner);
-    await this._commentRepository.deleteComment(useCaseId);
+    return this._commentRepository.deleteComment(useCaseId);
   }
 }
 
