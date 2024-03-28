@@ -4,7 +4,7 @@ const DeleteCommentUseCase = require('../DeleteCommentUseCase');
 const DeletedComment = require('../../../Domains/comments/entities/DeletedComment');
 
 describe('DeleteCommentUseCase', () => {
-  it('should orchestrating the add comment action correctly', async () => {
+  it('should orchestrating the delete comment action correctly', async () => {
     // Arrange
     const useCasePayload = {
       content: '**komentar telah dihapus**',
