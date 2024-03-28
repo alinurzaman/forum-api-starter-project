@@ -1,6 +1,7 @@
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedComment = require('../../Domains/comments/entities/AddedComment');
+const DeletedComment = require('../../Domains/comments/entities/DeletedComment');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
 
 class CommentRepositoryPostgres extends CommentRepository {
@@ -52,12 +53,13 @@ class CommentRepositoryPostgres extends CommentRepository {
   }
 
   async deleteComment(id) {
+    const content = '**komentar telah dihapus**';
     const query = {
-      text: 'UPDATE comments SET is_deleted = true WHERE id = $1 RETURNING id',
-      values: [id],
+      text: 'UPDATE comments SET is_deleted = true, content = $2 WHERE id = $1 RETURNING id, content',
+      values: [id, content],
     };
     const result = await this._pool.query(query);
-    return result.rows;
+    return new DeletedComment({ ...result.rows[0] });
   }
 }
 

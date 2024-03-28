@@ -5,6 +5,7 @@ const RegisterUser = require('../../../Domains/users/entities/RegisterUser');
 const PostThread = require('../../../Domains/threads/entities/PostThread');
 const AddComment = require('../../../Domains/comments/entities/AddComment');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
+const DeletedComment = require('../../../Domains/comments/entities/DeletedComment');
 const pool = require('../../database/postgres/pool');
 const UserRepositoryPostgres = require('../UserRepositoryPostgres');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
@@ -141,16 +142,40 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('deleteComment function', () => {
-    it('should persist delete comment', async () => {
+    it('should return deleted comment correctly', async () => {
       // Arrange
-      await UsersTableTestHelper.addUser({ username: 'dicoding' });
-      await ThreadsTableTestHelper.addThread({ title: 'new title' });
-      await CommentsTableTestHelper.addComment({ id: 'comment-123' });
-      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
+      const registerUser = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret_password',
+        fullname: 'Dicoding Indonesia',
+      });
+      const postThread = new PostThread({
+        title: 'thread title',
+        body: 'thread body',
+      });
+      const addComment = new AddComment({
+        content: 'new comment',
+      });
+      const fakeIdGenerator = () => '123'; // stub!
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
 
-      // Action & Assert
-      const results = await commentRepositoryPostgres.deleteComment('comment-123');
-      expect(results).toHaveLength(1);
+      // Action
+      const registeredUser = await userRepositoryPostgres.addUser(registerUser);
+      const postedThread = await threadRepositoryPostgres.addThread(postThread, registeredUser.id);
+      await commentRepositoryPostgres.addComment(
+        addComment,
+        postedThread.id,
+        registeredUser.id,
+      );
+      const deletedComment = await commentRepositoryPostgres.deleteComment('comment-123');
+
+      // Assert
+      expect(deletedComment).toStrictEqual(new DeletedComment({
+        id: 'comment-123',
+        content: '**komentar telah dihapus**',
+      }));
     });
   });
 });
