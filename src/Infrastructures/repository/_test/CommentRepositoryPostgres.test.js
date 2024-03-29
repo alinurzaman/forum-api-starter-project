@@ -6,6 +6,7 @@ const PostThread = require('../../../Domains/threads/entities/PostThread');
 const AddComment = require('../../../Domains/comments/entities/AddComment');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const DeletedComment = require('../../../Domains/comments/entities/DeletedComment');
+const ThreadComments = require('../../../Domains/comments/entities/ThreadComment');
 const pool = require('../../database/postgres/pool');
 const UserRepositoryPostgres = require('../UserRepositoryPostgres');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
@@ -175,6 +176,46 @@ describe('CommentRepositoryPostgres', () => {
       expect(deletedComment).toStrictEqual(new DeletedComment({
         id: 'comment-123',
         content: '**komentar telah dihapus**',
+      }));
+    });
+  });
+  describe('getThreadComments function', () => {
+    it('should return thread comments correctly', async () => {
+      // Arrange
+      const registerUser = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret_password',
+        fullname: 'Dicoding Indonesia',
+      });
+      const postThread = new PostThread({
+        title: 'thread title',
+        body: 'thread body',
+      });
+      const addComment = new AddComment({
+        content: 'new comment',
+      });
+      const fakeIdGenerator = () => '123'; // stub!
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action
+      const registeredUser = await userRepositoryPostgres.addUser(registerUser);
+      const postedThread = await threadRepositoryPostgres.addThread(postThread, registeredUser.id);
+      await commentRepositoryPostgres.addComment(
+        addComment,
+        postedThread.id,
+        registeredUser.id,
+      );
+      const comments = await CommentsTableTestHelper.findCommentsByThreadId('thread-123');
+      const threadComments = await commentRepositoryPostgres.getThreadComments(postedThread.id);
+
+      // Assert
+      expect(threadComments[0]).toStrictEqual(new ThreadComments({
+        id: 'comment-123',
+        username: 'dicoding',
+        date: comments[0].date,
+        content: 'new comment',
       }));
     });
   });
