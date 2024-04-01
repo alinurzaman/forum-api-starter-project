@@ -25,10 +25,10 @@ describe('AddCommentUseCase', () => {
     const mockCommentRepository = new CommentRepository();
 
     /** mocking needed function */
-    mockCommentRepository.addComment = jest.fn()
-      .mockImplementation(() => Promise.resolve(mockAddedComment));
     mockThreadRepository.verifyExistedThread = jest.fn()
       .mockImplementation(() => Promise.resolve());
+    mockCommentRepository.addComment = jest.fn()
+      .mockImplementation(() => Promise.resolve(mockAddedComment));
 
     /** creating use case instance */
     const getCommentUseCase = new AddCommentUseCase({
@@ -50,6 +50,7 @@ describe('AddCommentUseCase', () => {
       owner: useCaseOwner,
     }));
 
+    expect(mockThreadRepository.verifyExistedThread).toBeCalledWith(useCaseThreadId);
     expect(mockCommentRepository.addComment).toBeCalledWith(new AddComment({
       content: useCasePayload.content,
     }), useCaseThreadId, useCaseOwner);

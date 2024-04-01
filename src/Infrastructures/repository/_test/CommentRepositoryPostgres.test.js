@@ -175,7 +175,7 @@ describe('CommentRepositoryPostgres', () => {
       // Assert
       expect(deletedComment).toStrictEqual(new DeletedComment({
         id: 'comment-123',
-        content: '**komentar telah dihapus**',
+        isDeleted: true,
       }));
     });
   });

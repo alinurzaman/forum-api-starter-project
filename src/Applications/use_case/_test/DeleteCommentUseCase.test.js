@@ -7,7 +7,7 @@ describe('DeleteCommentUseCase', () => {
   it('should orchestrating the delete comment action correctly', async () => {
     // Arrange
     const useCasePayload = {
-      content: '**komentar telah dihapus**',
+      isDeleted: true,
     };
     const useCaseId = 'comment-123';
     const useCaseThreadId = 'thread-123';
@@ -15,7 +15,7 @@ describe('DeleteCommentUseCase', () => {
 
     const mockDeletedComment = new DeletedComment({
       id: 'comment-123',
-      content: useCasePayload.content,
+      isDeleted: useCasePayload.isDeleted,
     });
 
     /** creating dependency of use case */
@@ -44,9 +44,12 @@ describe('DeleteCommentUseCase', () => {
     // Assert
     expect(deletedComment).toStrictEqual(new DeletedComment({
       id: 'comment-123',
-      content: useCasePayload.content,
+      isDeleted: useCasePayload.isDeleted,
     }));
 
+    expect(mockThreadRepository.verifyExistedThread).toBeCalledWith(useCaseThreadId);
+    expect(mockCommentRepository.verifyExistedComment).toBeCalledWith(useCaseId);
+    expect(mockCommentRepository.verifyCommentOwner).toBeCalledWith(useCaseId, useCaseOwner);
     expect(mockCommentRepository.deleteComment)
       .toBeCalledWith(useCaseId);
   });

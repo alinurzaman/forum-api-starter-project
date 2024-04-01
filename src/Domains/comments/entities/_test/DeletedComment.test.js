@@ -4,7 +4,7 @@ describe('a DeletedComment entities', () => {
   it('should throw error when payload did not contain needed property', () => {
     // Arrange
     const payload = {
-      content: '**komentar telah dihapus**',
+      isDeleted: true,
     };
 
     // Action and Assert
@@ -15,7 +15,7 @@ describe('a DeletedComment entities', () => {
     // Arrange
     const payload = {
       id: 123,
-      content: '**komentar telah dihapus**',
+      isDeleted: true,
     };
 
     // Action and Assert
@@ -26,7 +26,7 @@ describe('a DeletedComment entities', () => {
     // Arrange
     const payload = {
       id: 'comment-123',
-      content: '**komentar telah dihapus**',
+      isDeleted: true,
     };
 
     // Action
