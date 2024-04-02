@@ -3,7 +3,7 @@ class ThreadDetail {
     this._verifyPayload(payload);
 
     const {
-      id, title, body, date, username,
+      id, title, body, date, username, comments,
     } = payload;
 
     this.id = id;
@@ -11,16 +11,17 @@ class ThreadDetail {
     this.body = body;
     this.date = date;
     this.username = username;
+    this.comments = comments;
   }
 
   _verifyPayload({
-    id, title, body, date, username,
+    id, title, body, date, username, comments,
   }) {
-    if (!id || !title || !body || !date || !username) {
+    if (!id || !title || !body || !date || !username || comments == null) {
       throw new Error('THREAD_DETAIL.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
-    if (typeof id !== 'string' || typeof title !== 'string' || typeof body !== 'string' || typeof date !== 'string' || typeof username !== 'string') {
+    if (typeof id !== 'string' || typeof title !== 'string' || typeof body !== 'string' || typeof date !== 'string' || typeof username !== 'string' || typeof comments !== 'object') {
       throw new Error('THREAD_DETAIL.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }

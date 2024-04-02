@@ -19,6 +19,7 @@ describe('a ThreadDetail entities', () => {
       body: 'abc',
       date: 'date',
       username: 123,
+      comments: [],
     };
 
     // Action and Assert
@@ -33,6 +34,7 @@ describe('a ThreadDetail entities', () => {
       body: 'thread body',
       date: '2024-03-28T14:48:00.000Z',
       username: 'username',
+      comments: [],
     };
 
     // Action

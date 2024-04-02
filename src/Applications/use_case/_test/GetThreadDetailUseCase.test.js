@@ -16,6 +16,7 @@ describe('GetThreadDetailUseCase', () => {
       body: 'thread body',
       date: '2024-03-28T14:48:00.000Z',
       username: 'dicoding',
+      comments: [],
     });
 
     const mockRawComment = new RawComment({
@@ -44,8 +45,6 @@ describe('GetThreadDetailUseCase', () => {
 
     // Action
     const threadDetail = await getThreadDetailUseCase.execute(useCaseId);
-    const threadComment = threadDetail.comments[0];
-    delete threadDetail.comments;
 
     // Assert
     expect(threadDetail).toStrictEqual(new ThreadDetail({
@@ -54,12 +53,12 @@ describe('GetThreadDetailUseCase', () => {
       body: 'thread body',
       date: '2024-03-28T14:48:00.000Z',
       username: 'dicoding',
-    }));
-    expect(threadComment).toStrictEqual(new ThreadComment({
-      id: 'comment-123',
-      username: 'dicoding',
-      date: '2024-03-28T14:48:00.000Z',
-      content: 'new comment',
+      comments: [new ThreadComment({
+        id: 'comment-123',
+        username: 'dicoding',
+        date: '2024-03-28T14:48:00.000Z',
+        content: 'new comment',
+      })],
     }));
 
     expect(mockThreadRepository.getThreadDetail)

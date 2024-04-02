@@ -133,6 +133,7 @@ describe('ThreadRepositoryPostgres', () => {
         body: 'thread body',
         date: threads[0].date,
         username: 'dicoding',
+        comments: [],
       }));
     });
   });

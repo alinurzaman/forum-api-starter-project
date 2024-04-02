@@ -53,7 +53,7 @@ class ThreadRepositoryPostgres extends ThreadRepository {
       throw new NotFoundError('thread tidak ditemukan');
     }
 
-    return new ThreadDetail({ ...result.rows[0] });
+    return new ThreadDetail({ ...result.rows[0], comments: [] });
   }
 }
 
