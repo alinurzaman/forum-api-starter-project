@@ -2,7 +2,7 @@ const AuthorizationError = require('../../Commons/exceptions/AuthorizationError'
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedComment = require('../../Domains/comments/entities/AddedComment');
 const DeletedComment = require('../../Domains/comments/entities/DeletedComment');
-const ThreadComment = require('../../Domains/comments/entities/ThreadComment');
+const RawComment = require('../../Domains/comments/entities/RawComment');
 const CommentRepository = require('../../Domains/comments/CommentRepository');
 
 class CommentRepositoryPostgres extends CommentRepository {
@@ -66,7 +66,7 @@ class CommentRepositoryPostgres extends CommentRepository {
 
   async getThreadComments(threadId) {
     const query = {
-      text: `SELECT comments.id, users.username, date, content, is_deleted as isDeleted 
+      text: `SELECT comments.id, users.username, date, content, is_deleted  
       FROM comments 
       JOIN users ON users.id = comments.owner
       WHERE comments.thread_id = $1 
@@ -76,16 +76,13 @@ class CommentRepositoryPostgres extends CommentRepository {
     const result = await this._pool.query(query);
     const comments = [];
     result.rows.forEach((comment) => {
-      if (comment.isDeleted === true) {
-        comments.push(new ThreadComment({
-          id: comment.id,
-          username: comment.username,
-          date: comment.date,
-          content: '**komentar telah dihapus**',
-        }));
-      } else {
-        comments.push(new ThreadComment({ ...comment }));
-      }
+      comments.push(new RawComment({
+        id: comment.id,
+        username: comment.username,
+        date: comment.date,
+        content: comment.content,
+        isDeleted: comment.is_deleted,
+      }));
     });
     return comments;
   }

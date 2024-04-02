@@ -34,6 +34,6 @@ describe('a DeletedComment entities', () => {
 
     // Assert
     expect(deletedComment.id).toEqual(payload.id);
-    expect(deletedComment.content).toEqual(payload.content);
+    expect(deletedComment.isDeleted).toEqual(payload.isDeleted);
   });
 });

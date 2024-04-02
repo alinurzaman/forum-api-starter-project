@@ -3,6 +3,7 @@ const CommentRepository = require('../../../Domains/comments/CommentRepository')
 const GetThreadDetailUseCase = require('../GetThreadDetailUseCase');
 const ThreadDetail = require('../../../Domains/threads/entities/ThreadDetail');
 const ThreadComment = require('../../../Domains/comments/entities/ThreadComment');
+const RawComment = require('../../../Domains/comments/entities/RawComment');
 
 describe('GetThreadDetailUseCase', () => {
   it('should orchestrating the get thread detail action correctly', async () => {
@@ -17,11 +18,12 @@ describe('GetThreadDetailUseCase', () => {
       username: 'dicoding',
     });
 
-    const mockThreadComment = new ThreadComment({
+    const mockRawComment = new RawComment({
       id: 'comment-123',
       username: 'dicoding',
       date: '2024-03-28T14:48:00.000Z',
       content: 'new comment',
+      isDeleted: false,
     });
 
     /** creating dependency of use case */
@@ -32,7 +34,7 @@ describe('GetThreadDetailUseCase', () => {
     mockThreadRepository.getThreadDetail = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadDetail));
     mockCommentRepository.getThreadComments = jest.fn()
-      .mockImplementation(() => Promise.resolve([mockThreadComment]));
+      .mockImplementation(() => Promise.resolve([mockRawComment]));
 
     /** creating use case instance */
     const getThreadDetailUseCase = new GetThreadDetailUseCase({

@@ -27,9 +27,9 @@ describe('a AddComment entities', () => {
     };
 
     // Action
-    const { comment } = new AddComment(payload);
+    const { content } = new AddComment(payload);
 
     // Assert
-    expect(comment).toEqual(payload.comment);
+    expect(content).toEqual(payload.content);
   });
 });

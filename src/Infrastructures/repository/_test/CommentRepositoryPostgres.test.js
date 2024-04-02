@@ -6,7 +6,7 @@ const PostThread = require('../../../Domains/threads/entities/PostThread');
 const AddComment = require('../../../Domains/comments/entities/AddComment');
 const AddedComment = require('../../../Domains/comments/entities/AddedComment');
 const DeletedComment = require('../../../Domains/comments/entities/DeletedComment');
-const ThreadComments = require('../../../Domains/comments/entities/ThreadComment');
+const RawComment = require('../../../Domains/comments/entities/RawComment');
 const pool = require('../../database/postgres/pool');
 const UserRepositoryPostgres = require('../UserRepositoryPostgres');
 const ThreadRepositoryPostgres = require('../ThreadRepositoryPostgres');
@@ -177,6 +177,7 @@ describe('CommentRepositoryPostgres', () => {
         id: 'comment-123',
         isDeleted: true,
       }));
+      expect(deletedComment.isDeleted).toEqual(true);
     });
   });
   describe('getThreadComments function', () => {
@@ -211,11 +212,12 @@ describe('CommentRepositoryPostgres', () => {
       const threadComments = await commentRepositoryPostgres.getThreadComments(postedThread.id);
 
       // Assert
-      expect(threadComments[0]).toStrictEqual(new ThreadComments({
+      expect(threadComments[0]).toStrictEqual(new RawComment({
         id: 'comment-123',
         username: 'dicoding',
         date: comments[0].date,
         content: 'new comment',
+        isDeleted: false,
       }));
     });
   });
