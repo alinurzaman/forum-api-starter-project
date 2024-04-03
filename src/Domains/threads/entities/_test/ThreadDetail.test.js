@@ -39,7 +39,7 @@ describe('a ThreadDetail entities', () => {
 
     // Action
     const {
-      id, title, body, date, username,
+      id, title, body, date, username, comments,
     } = new ThreadDetail(payload);
 
     // Assert
@@ -48,5 +48,6 @@ describe('a ThreadDetail entities', () => {
     expect(body).toEqual(payload.body);
     expect(date).toEqual(payload.date);
     expect(username).toEqual(payload.username);
+    expect(comments).toEqual(payload.comments);
   });
 });

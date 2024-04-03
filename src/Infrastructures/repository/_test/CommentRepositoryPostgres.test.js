@@ -143,6 +143,39 @@ describe('CommentRepositoryPostgres', () => {
   });
 
   describe('deleteComment function', () => {
+    it('should persist delete comment and return deleted comment correctly', async () => {
+      // Arrange
+      const registerUser = new RegisterUser({
+        username: 'dicoding',
+        password: 'secret_password',
+        fullname: 'Dicoding Indonesia',
+      });
+      const postThread = new PostThread({
+        title: 'thread title',
+        body: 'thread body',
+      });
+      const addComment = new AddComment({
+        content: 'new comment',
+      });
+      const fakeIdGenerator = () => '123'; // stub!
+      const userRepositoryPostgres = new UserRepositoryPostgres(pool, fakeIdGenerator);
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, fakeIdGenerator);
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, fakeIdGenerator);
+
+      // Action
+      const registeredUser = await userRepositoryPostgres.addUser(registerUser);
+      const postedThread = await threadRepositoryPostgres.addThread(postThread, registeredUser.id);
+      await commentRepositoryPostgres.addComment(
+        addComment,
+        postedThread.id,
+        registeredUser.id,
+      );
+      await commentRepositoryPostgres.deleteComment('comment-123');
+
+      // Assert
+      const comments = await CommentsTableTestHelper.findCommentsById('comment-123');
+      expect(comments[0].is_deleted).toBeTruthy();
+    });
     it('should return deleted comment correctly', async () => {
       // Arrange
       const registerUser = new RegisterUser({
@@ -177,7 +210,6 @@ describe('CommentRepositoryPostgres', () => {
         id: 'comment-123',
         isDeleted: true,
       }));
-      expect(deletedComment.isDeleted).toEqual(true);
     });
   });
   describe('getThreadComments function', () => {

@@ -19,11 +19,19 @@ describe('GetThreadDetailUseCase', () => {
       comments: [],
     });
 
-    const mockRawComment = new RawComment({
+    const mockRawDeletedComment = new RawComment({
       id: 'comment-123',
       username: 'dicoding',
       date: '2024-03-28T14:48:00.000Z',
-      content: 'new comment',
+      content: 'new comment 1',
+      isDeleted: true,
+    });
+
+    const mockRawComment = new RawComment({
+      id: 'comment-124',
+      username: 'dicoding',
+      date: '2024-03-28T15:48:00.000Z',
+      content: 'new comment 2',
       isDeleted: false,
     });
 
@@ -35,7 +43,10 @@ describe('GetThreadDetailUseCase', () => {
     mockThreadRepository.getThreadDetail = jest.fn()
       .mockImplementation(() => Promise.resolve(mockThreadDetail));
     mockCommentRepository.getThreadComments = jest.fn()
-      .mockImplementation(() => Promise.resolve([mockRawComment]));
+      .mockImplementation(() => Promise.resolve([
+        mockRawDeletedComment,
+        mockRawComment,
+      ]));
 
     /** creating use case instance */
     const getThreadDetailUseCase = new GetThreadDetailUseCase({
@@ -53,12 +64,20 @@ describe('GetThreadDetailUseCase', () => {
       body: 'thread body',
       date: '2024-03-28T14:48:00.000Z',
       username: 'dicoding',
-      comments: [new ThreadComment({
-        id: 'comment-123',
-        username: 'dicoding',
-        date: '2024-03-28T14:48:00.000Z',
-        content: 'new comment',
-      })],
+      comments: [
+        new ThreadComment({
+          id: 'comment-123',
+          username: 'dicoding',
+          date: '2024-03-28T14:48:00.000Z',
+          content: '**komentar telah dihapus**',
+        }),
+        new ThreadComment({
+          id: 'comment-124',
+          username: 'dicoding',
+          date: '2024-03-28T15:48:00.000Z',
+          content: 'new comment 2',
+        }),
+      ],
     }));
 
     expect(mockThreadRepository.getThreadDetail)
