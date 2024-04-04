@@ -203,6 +203,7 @@ describe('CommentRepositoryPostgres', () => {
         postedThread.id,
         registeredUser.id,
       );
+      const beforeDeletedComment = await CommentsTableTestHelper.findCommentsById('comment-123');
       const deletedComment = await commentRepositoryPostgres.deleteComment('comment-123');
 
       // Assert
@@ -210,6 +211,7 @@ describe('CommentRepositoryPostgres', () => {
         id: 'comment-123',
         isDeleted: true,
       }));
+      expect(beforeDeletedComment[0].is_deleted).not.toEqual(deletedComment.isDeleted);
     });
   });
   describe('getThreadComments function', () => {
